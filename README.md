@@ -49,18 +49,6 @@ src/*.test.js       Node test suite
 package.json        Local scripts
 ```
 
-### Files Intentionally Not Published
-
-The repository ignores local/system artifacts and non-runtime planning files:
-
-- `.DS_Store`
-- `node_modules/`
-- `.env*`
-- `coverage/`, `dist/`, `build/`, `*.log`
-- `docs/`
-- `.superpowers/`
-- `htnn-gateway`
-
 ## 中文
 
 ### 内容概览
@@ -105,15 +93,3 @@ src/frontier.js     前沿篇教学 frame
 src/*.test.js       Node 测试
 package.json        本地脚本
 ```
-
-### 不同步到 GitHub 的文件
-
-以下文件只属于本机、缓存、生成物或规划过程，不是运行/测试课程所必需：
-
-- `.DS_Store`
-- `node_modules/`
-- `.env*`
-- `coverage/`、`dist/`、`build/`、`*.log`
-- `docs/`
-- `.superpowers/`
-- `htnn-gateway`
