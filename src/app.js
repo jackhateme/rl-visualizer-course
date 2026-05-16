@@ -37,11 +37,13 @@ const I18N = {
     languageName: "中文",
     appEyebrow: {
       basic: "Foundation RL / Interactive Course",
+      basicExperiment: "Cliff Walking / TD Control Lab",
       advanced: "Advanced RL / Deep RL",
       frontier: "Frontier RL / Modern Topics",
     },
     appTitle: {
       basic: "强化学习基础篇完整教程",
+      basicExperiment: "悬崖漫步 TD 控制实验",
       advanced: "强化学习进阶篇可视化教学",
       frontier: "强化学习前沿篇可视化教学",
     },
@@ -193,11 +195,13 @@ const I18N = {
     languageName: "English",
     appEyebrow: {
       basic: "Foundation RL / Interactive Course",
+      basicExperiment: "Cliff Walking / TD Control Lab",
       advanced: "Advanced RL / Deep RL",
       frontier: "Frontier RL / Modern Topics",
     },
     appTitle: {
       basic: "Foundation RL Interactive Course",
+      basicExperiment: "Cliff Walking TD Control Lab",
       advanced: "Advanced RL Visual Lab",
       frontier: "Frontier RL Visual Lab",
     },
@@ -1422,13 +1426,39 @@ function toggleAutoPlay() {
   }
 }
 
+function isBasicExperimentMode() {
+  return state.currentLab === "basic" && state.mode === "experiment";
+}
+
+function appTitleVariant() {
+  return isBasicExperimentMode() ? "basicExperiment" : state.currentLab;
+}
+
+function syncWorkspaceVisibility() {
+  const isBasicLab = state.currentLab === "basic";
+  const showBasicTutorial = isBasicLab && state.mode === "teach";
+  const showBasicWorkspace = isBasicExperimentMode();
+  const showAdvancedWorkspace = !isBasicLab;
+
+  els.algorithmSwitch.classList.toggle("hidden", !showBasicWorkspace);
+  els.modeSwitch.classList.toggle("hidden", !isBasicLab);
+  els.basicTutorial.classList.toggle("hidden", !showBasicTutorial);
+  els.basicWorkspace.classList.toggle("hidden", !showBasicWorkspace);
+  els.experimentPanel.classList.toggle("collapsed", !showBasicWorkspace);
+  els.experimentPanel.classList.toggle("hidden", !showBasicWorkspace);
+  els.advancedWorkspace.classList.toggle("hidden", !showAdvancedWorkspace);
+  els.advancedExperimentPanel.classList.toggle("hidden", !showAdvancedWorkspace);
+}
+
 function setMode(mode) {
   state.mode = mode;
-  const showExperiment = state.currentLab === "basic" && mode === "experiment";
+  if (!isBasicExperimentMode()) {
+    stopAutoPlay();
+  }
   els.teachModeButton.classList.toggle("active", mode === "teach");
   els.experimentModeButton.classList.toggle("active", mode === "experiment");
-  els.experimentPanel.classList.toggle("collapsed", !showExperiment);
-  els.experimentPanel.classList.toggle("hidden", !showExperiment);
+  syncWorkspaceVisibility();
+  renderStaticText();
 }
 
 function setLanguage(language) {
@@ -2097,8 +2127,9 @@ function renderStaticText() {
   setAria(els.advancedExplainPanel, t("static.advancedExplainAria"));
   setAria(els.advancedExperimentPanel, t("static.advancedExperimentAria"));
 
-  setText(els.appEyebrow, t(`appEyebrow.${state.currentLab}`));
-  setText(els.appTitle, t(`appTitle.${state.currentLab}`));
+  const titleVariant = appTitleVariant();
+  setText(els.appEyebrow, t(`appEyebrow.${titleVariant}`));
+  setText(els.appTitle, t(`appTitle.${titleVariant}`));
   setText(els.basicNavTitle, t("static.basicRoute"));
   setText(els.basicTheoryTitle, t("static.theoryRead"));
   setText(els.basicControlsTitle, t("static.keyParams"));
@@ -2138,13 +2169,7 @@ function setCurrentLab(lab) {
   els.basicLabButton.classList.toggle("active", lab === "basic");
   els.advancedLabButton.classList.toggle("active", lab === "advanced");
   els.frontierLabButton.classList.toggle("active", lab === "frontier");
-  els.algorithmSwitch.classList.toggle("hidden", lab !== "basic");
-  els.modeSwitch.classList.toggle("hidden", lab !== "basic");
-  els.basicTutorial.classList.toggle("hidden", lab !== "basic");
-  els.basicWorkspace.classList.toggle("hidden", lab !== "basic");
-  els.experimentPanel.classList.toggle("hidden", lab !== "basic" || state.mode === "teach");
-  els.advancedWorkspace.classList.toggle("hidden", lab === "basic");
-  els.advancedExperimentPanel.classList.toggle("hidden", lab === "basic");
+  syncWorkspaceVisibility();
   if (lab !== "basic") {
     stopAutoPlay();
   } else {

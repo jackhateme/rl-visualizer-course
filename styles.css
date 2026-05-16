@@ -56,13 +56,13 @@ button {
 }
 
 .topbar {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(280px, 1fr) auto;
   align-items: center;
-  justify-content: space-between;
   gap: 18px;
   min-height: 96px;
   padding: 18px 20px;
-  border-radius: 8px 8px 0 0;
+  border-radius: 8px;
 }
 
 .eyebrow {
@@ -170,14 +170,21 @@ h3 {
 .workspace {
   display: grid;
   grid-template-columns: minmax(210px, 0.78fr) minmax(560px, 1.75fr) minmax(300px, 1fr);
-  gap: 0;
-  border-top: 0;
+  align-items: start;
+  gap: 12px;
+  margin-top: 12px;
+  border: 0;
+  background: transparent;
 }
 
 .basic-tutorial {
   display: grid;
   grid-template-columns: minmax(220px, 0.8fr) minmax(520px, 1.4fr) minmax(320px, 1fr);
-  border-top: 0;
+  align-items: start;
+  gap: 12px;
+  margin-top: 12px;
+  border: 0;
+  background: transparent;
 }
 
 .hidden {
@@ -187,9 +194,11 @@ h3 {
 .advanced-workspace {
   display: grid;
   grid-template-columns: minmax(220px, 0.75fr) minmax(600px, 1.7fr) minmax(310px, 1fr);
-  border: 1px solid var(--line);
-  border-top: 0;
-  background: var(--surface);
+  align-items: start;
+  gap: 12px;
+  margin-top: 12px;
+  border: 0;
+  background: transparent;
 }
 
 .steps-panel,
@@ -203,6 +212,10 @@ h3 {
 .advanced-stage-panel,
 .advanced-explain-panel {
   padding: 18px;
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
 }
 
 .steps-panel,
@@ -211,7 +224,10 @@ h3 {
 .basic-stage-panel,
 .advanced-nav-panel,
 .advanced-stage-panel {
-  border-right: 1px solid var(--line);
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
 }
 
 .step-list {
@@ -440,7 +456,8 @@ h3 {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 2px;
   place-items: center;
-  font-size: 9px;
+  width: min(44px, 100%);
+  font-size: 8px;
   font-weight: 900;
 }
 
@@ -448,10 +465,11 @@ h3 {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 32px;
+  width: 100%;
+  min-width: 0;
   min-height: 14px;
   border-radius: 4px;
-  padding: 0 4px;
+  padding: 0 2px;
 }
 
 .sarsa-badge {
@@ -728,8 +746,8 @@ h3 {
 }
 
 .experiment-panel {
-  border-top: 0;
-  border-radius: 0 0 8px 8px;
+  margin-top: 12px;
+  border-radius: 8px;
 }
 
 .experiment-panel.collapsed {
@@ -935,7 +953,7 @@ h3 {
 
 .basic-stage {
   display: grid;
-  grid-template-columns: repeat(4, minmax(110px, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 12px;
   min-height: 180px;
   margin-top: 18px;
@@ -946,6 +964,7 @@ h3 {
   display: grid;
   align-content: center;
   gap: 8px;
+  min-width: 0;
   min-height: 112px;
   padding: 14px;
   border: 1px solid var(--line);
@@ -983,11 +1002,12 @@ h3 {
 .basic-node strong {
   font-size: 20px;
   line-height: 1.15;
+  overflow-wrap: anywhere;
 }
 
 .advanced-stage {
   display: grid;
-  grid-template-columns: repeat(4, minmax(110px, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 12px;
   min-height: 250px;
 }
@@ -997,6 +1017,7 @@ h3 {
   display: grid;
   align-content: center;
   gap: 8px;
+  min-width: 0;
   min-height: 118px;
   padding: 14px;
   border: 1px solid var(--line);
@@ -1034,6 +1055,7 @@ h3 {
 .advanced-node strong {
   font-size: 20px;
   line-height: 1.15;
+  overflow-wrap: anywhere;
 }
 
 .advanced-progress {
@@ -1133,7 +1155,19 @@ h3 {
   color: var(--text);
 }
 
+@media (max-width: 1320px) {
+  .topbar {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+
+  .topbar-controls {
+    justify-content: flex-start;
+  }
+}
+
 @media (max-width: 1120px) {
+  .advanced-workspace,
   .basic-tutorial,
   .workspace {
     grid-template-columns: 1fr;
@@ -1142,9 +1176,10 @@ h3 {
   .steps-panel,
   .grid-panel,
   .basic-nav-panel,
-  .basic-stage-panel {
-    border-right: 0;
-    border-bottom: 1px solid var(--line);
+  .basic-stage-panel,
+  .advanced-nav-panel,
+  .advanced-stage-panel {
+    border: 1px solid var(--line);
   }
 
   .basic-chapter-nav {
@@ -1157,6 +1192,10 @@ h3 {
 
   .slider-grid {
     grid-template-columns: repeat(2, minmax(150px, 1fr));
+  }
+
+  .advanced-nav {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -1176,16 +1215,21 @@ h3 {
   }
 
   .algorithm-switch,
-  .mode-switch {
+  .mode-switch,
+  .lab-switch,
+  .language-switch {
     width: 100%;
   }
 
-  .algorithm-switch {
+  .algorithm-switch,
+  .lab-switch {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .algorithm-button,
   .mode-button,
+  .lab-button,
+  .language-button,
   .tool-button,
   .primary-button {
     padding: 0 8px;
@@ -1199,7 +1243,13 @@ h3 {
   .steps-panel,
   .grid-panel,
   .explain-panel,
-  .experiment-panel {
+  .experiment-panel,
+  .basic-nav-panel,
+  .basic-stage-panel,
+  .basic-explain-panel,
+  .advanced-nav-panel,
+  .advanced-stage-panel,
+  .advanced-explain-panel {
     padding: 14px;
   }
 
@@ -1219,5 +1269,15 @@ h3 {
 
   .controls-row > button {
     flex: 1 1 140px;
+  }
+
+  .basic-stage,
+  .advanced-stage {
+    grid-template-columns: 1fr;
+  }
+
+  .basic-node::after,
+  .advanced-node::after {
+    content: none;
   }
 }
