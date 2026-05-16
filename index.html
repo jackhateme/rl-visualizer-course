@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TD Control Policy Visualizer</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Cliff Walking / TD Control</p>
+          <h1>Sarsa / n-step / Q-learning / Dyna-Q 可视化</h1>
+        </div>
+        <div class="topbar-controls">
+          <div class="lab-switch" role="tablist" aria-label="学习篇章">
+            <button class="lab-button active" id="basicLabButton" type="button">基础篇</button>
+            <button class="lab-button" id="advancedLabButton" type="button">进阶篇</button>
+            <button class="lab-button" id="frontierLabButton" type="button">前沿篇</button>
+          </div>
+          <div class="algorithm-switch" role="tablist" aria-label="算法视图">
+            <button class="algorithm-button active" id="compareViewButton" type="button">对比</button>
+            <button class="algorithm-button" id="sarsaViewButton" type="button">Sarsa</button>
+            <button class="algorithm-button" id="nStepSarsaViewButton" type="button">n-step</button>
+            <button class="algorithm-button" id="qLearningViewButton" type="button">Q-learn</button>
+            <button class="algorithm-button" id="dynaQViewButton" type="button">Dyna-Q</button>
+          </div>
+          <div class="mode-switch" role="tablist" aria-label="模式">
+            <button class="mode-button active" id="teachModeButton" type="button">教学</button>
+            <button class="mode-button" id="experimentModeButton" type="button">实验</button>
+          </div>
+          <div class="language-switch" role="tablist" aria-label="语言">
+            <button class="language-button active" id="zhLangButton" type="button">中文</button>
+            <button class="language-button" id="enLangButton" type="button">EN</button>
+          </div>
+        </div>
+      </header>
+
+      <section class="basic-tutorial" id="basicTutorial" aria-label="基础篇完整教程">
+        <aside class="basic-nav-panel" aria-label="基础篇章节导航">
+          <h2 id="basicNavTitle">基础篇路线</h2>
+          <div class="basic-chapter-nav" id="basicChapterNav"></div>
+        </aside>
+
+        <section class="basic-stage-panel" aria-label="基础概念可视化">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow" id="basicChapter">Foundation RL</p>
+              <h2 id="basicTitle">初探强化学习</h2>
+              <p id="basicIntuition"></p>
+            </div>
+            <div class="advanced-progress">
+              <span id="basicProgressLabel">step 1/5</span>
+              <i id="basicProgressBar"></i>
+            </div>
+          </div>
+          <div class="basic-stage" id="basicStage"></div>
+          <div class="controls-row">
+            <button class="primary-button" id="basicNextButton" type="button">下一步</button>
+          </div>
+        </section>
+
+        <aside class="basic-explain-panel" aria-label="基础理论解释">
+          <h2 id="basicTheoryTitle">理论速读</h2>
+          <div class="formula-card">
+            <div class="formula" id="basicFormula"></div>
+            <dl class="formula-values advancedMetrics" id="basicMetrics"></dl>
+          </div>
+          <div class="q-inspector">
+            <div class="panel-heading compact">
+              <h3 id="basicControlsTitle">关键参数</h3>
+              <span id="basicControlLabel">chapter controls</span>
+            </div>
+            <div class="advanced-controls" id="basicControls"></div>
+          </div>
+          <div class="theory-card">
+            <div class="theory-list" id="basicTheory"></div>
+          </div>
+        </aside>
+      </section>
+
+      <section class="workspace" id="basicWorkspace" aria-label="Sarsa visualizer">
+        <aside class="steps-panel" aria-label="学习步骤">
+          <h2 id="stepsTitle">更新链路</h2>
+          <ol class="step-list" id="stepList"></ol>
+          <div class="mini-metrics">
+            <div>
+              <span id="episodeMetricLabel">Episode</span>
+              <strong id="episodeCount">1</strong>
+            </div>
+            <div>
+              <span id="stepMetricLabel">Step</span>
+              <strong id="stepCount">0</strong>
+            </div>
+            <div>
+              <span id="returnMetricLabel">Return</span>
+              <strong id="returnValue">0</strong>
+            </div>
+          </div>
+        </aside>
+
+        <section class="grid-panel" aria-label="悬崖漫步网格">
+          <div class="panel-heading">
+            <div>
+              <h2 id="gridTitle">悬崖漫步环境</h2>
+              <p id="phaseMessage">初始化 Q 表，智能体从左下角开始。</p>
+            </div>
+            <div class="legend" aria-label="图例">
+              <span><i class="legend-agent"></i><span id="legendAgentLabel">智能体</span></span>
+              <span><i class="legend-cliff"></i><span id="legendCliffLabel">悬崖</span></span>
+              <span><i class="legend-goal"></i><span id="legendGoalLabel">终点</span></span>
+            </div>
+          </div>
+          <div class="grid-wrap">
+            <div class="cliff-grid" id="cliffGrid"></div>
+          </div>
+          <div class="controls-row">
+            <button class="primary-button" id="nextButton" type="button">下一步</button>
+            <button class="tool-button" id="autoButton" type="button">自动播放</button>
+            <button class="tool-button" id="resetEpisodeButton" type="button">重置回合</button>
+            <button class="tool-button" id="resetAllButton" type="button">清空 Q 表</button>
+          </div>
+        </section>
+
+        <aside class="explain-panel" aria-label="当前更新解释">
+            <h2 id="updateTitle">当前 TD 更新</h2>
+          <div class="tuple" id="tupleView"></div>
+          <div class="formula-card">
+            <div class="formula" id="formulaText">Q(s,a) ← Q(s,a) + α [r + γQ(s',a') − Q(s,a)]</div>
+            <dl class="formula-values" id="formulaValues"></dl>
+          </div>
+          <div class="q-inspector">
+            <div class="panel-heading compact">
+              <h3 id="qInspectorTitle">当前状态 Q 值</h3>
+              <span id="stateLabel">s=(3,0)</span>
+            </div>
+            <div class="q-bars" id="qBars"></div>
+          </div>
+        </aside>
+      </section>
+
+      <section class="experiment-panel" id="experimentPanel" aria-label="实验参数">
+        <div class="panel-heading">
+          <div>
+            <h2 id="experimentTitle">参数实验</h2>
+            <p id="experimentIntro">观察探索、学习率和折扣因子如何改变策略成形速度。</p>
+          </div>
+          <button class="primary-button" id="trainButton" type="button">批量训练</button>
+        </div>
+
+        <div class="slider-grid">
+          <label class="slider-control">
+            <span>epsilon <strong id="epsilonValue">0.10</strong></span>
+            <input id="epsilonInput" type="range" min="0" max="1" step="0.01" value="0.10" />
+          </label>
+          <label class="slider-control">
+            <span>alpha <strong id="alphaValue">0.10</strong></span>
+            <input id="alphaInput" type="range" min="0.01" max="1" step="0.01" value="0.10" />
+          </label>
+          <label class="slider-control">
+            <span>gamma <strong id="gammaValue">0.90</strong></span>
+            <input id="gammaInput" type="range" min="0" max="1" step="0.01" value="0.90" />
+          </label>
+          <label class="slider-control">
+            <span>n steps <strong id="nStepsValue">3</strong></span>
+            <input id="nStepsInput" type="range" min="1" max="8" step="1" value="3" />
+          </label>
+          <label class="slider-control">
+            <span>planning <strong id="planningStepsValue">5</strong></span>
+            <input id="planningStepsInput" type="range" min="0" max="30" step="1" value="5" />
+          </label>
+          <label class="slider-control">
+            <span>episodes <strong id="episodesValue">50</strong></span>
+            <input id="episodesInput" type="range" min="1" max="300" step="1" value="50" />
+          </label>
+          <label class="slider-control">
+            <span>speed <strong id="speedValue">650ms</strong></span>
+            <input id="speedInput" type="range" min="120" max="1200" step="10" value="650" />
+          </label>
+        </div>
+
+        <div class="batch-delta" id="batchDelta" aria-label="本次批量训练 Q 表变化量"></div>
+
+        <div class="charts-row">
+          <div class="reward-chart" id="rewardChart" aria-label="回报趋势"></div>
+          <div class="event-log" id="eventLog" aria-label="更新日志"></div>
+        </div>
+      </section>
+
+      <section class="advanced-workspace hidden" id="advancedWorkspace" aria-label="进阶篇可视化教学">
+        <aside class="advanced-nav-panel" aria-label="进阶算法导航">
+          <h2 id="advancedNavTitle">进阶篇算法</h2>
+          <div class="advanced-nav" id="advancedNav"></div>
+          <ol class="step-list advanced-steps" id="advancedStepList"></ol>
+        </aside>
+
+        <section class="advanced-stage-panel" aria-label="算法可视化舞台">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow" id="advancedChapter">Advanced RL</p>
+              <h2 id="advancedTitle">DQN</h2>
+              <p id="advancedIntuition"></p>
+            </div>
+            <div class="advanced-progress">
+              <span id="advancedProgressLabel">step 1/6</span>
+              <i id="advancedProgressBar"></i>
+            </div>
+          </div>
+          <div class="advanced-stage" id="advancedStage"></div>
+          <div class="controls-row">
+            <button class="primary-button" id="advancedNextButton" type="button">下一步</button>
+            <button class="tool-button" id="advancedAutoButton" type="button">自动播放</button>
+            <button class="tool-button" id="advancedResetButton" type="button">重置</button>
+          </div>
+        </section>
+
+        <aside class="advanced-explain-panel" aria-label="进阶算法解释">
+          <h2 id="advancedMechanismTitle">当前机制</h2>
+          <div class="formula-card">
+            <div class="formula" id="advancedFormula"></div>
+            <dl class="formula-values advancedMetrics" id="advancedMetrics"></dl>
+          </div>
+          <div class="q-inspector">
+            <div class="panel-heading compact">
+              <h3 id="advancedControlsTitle">关键参数</h3>
+              <span id="advancedControlLabel">teaching controls</span>
+            </div>
+            <div class="advanced-controls" id="advancedControls"></div>
+          </div>
+          <div class="theory-card" aria-label="理论速读">
+            <h3 id="advancedTheoryTitle">理论速读</h3>
+            <div class="theory-list" id="advancedTheory"></div>
+          </div>
+        </aside>
+      </section>
+
+      <section class="experiment-panel hidden" id="advancedExperimentPanel" aria-label="进阶篇参数实验">
+        <div class="panel-heading">
+          <div>
+            <h2 id="advancedExperimentTitle">进阶篇实验</h2>
+            <p id="advancedExperimentIntro">切换算法，观察每个深度强化学习算法的核心更新机制。</p>
+          </div>
+          <button class="primary-button" id="advancedTrainButton" type="button">批量演示</button>
+        </div>
+        <div class="advanced-timeline" id="advancedTimeline"></div>
+      </section>
+    </main>
+
+    <script type="module" src="./src/app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+
+# Generated/runtime output
+coverage/
+dist/
+build/
+*.log
+
+# Local planning artifacts, not required to run or test the course
+.superpowers/
+docs/
+htnn-gateway
